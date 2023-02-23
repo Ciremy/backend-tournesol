@@ -8,7 +8,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // GET
-app.get("/user", async (req, res) => {
+
+const routeList = ["user", "admin", "company", "product"];
+
+app.get("/", async (req, res) => {
+  try {
+    //const result = await db.pool.query("select * from user");
+    res.send(routeList);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get("/users", async (req, res) => {
   try {
     const result = await db.pool.query("select * from user");
     res.send(result);
@@ -47,19 +59,20 @@ app.get("/product", async (req, res) => {
   }
 });
 
-// POST
-// app.post("/tasks", async (req, res) => {
-//   let task = req.body;
-//   try {
-//     const result = await db.pool.query(
-//       "insert into tasks (description) values (?)",
-//       [task.description]
-//     );
-//     res.send(result);
-//   } catch (err) {
-//     throw err;
-//   }
-// });
+//POST
+
+app.post("/user", async (req, res) => {
+  let task = req.body;
+  //console.log(task.mail);
+  try {
+    const result = await db.pool.query(
+      `insert into user (user_id, name, mail, password) values ("${task.user_id}","${task.name}", "${task.mail}", "${task.password}")`
+    );
+    res.send(task);
+  } catch (err) {
+    throw err;
+  }
+});
 
 // app.put("/tasks", async (req, res) => {
 //   let task = req.body;
