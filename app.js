@@ -13,7 +13,6 @@ const routeList = ["user", "admin", "company", "product"];
 
 app.get("/", async (req, res) => {
   try {
-    //const result = await db.pool.query("select * from user");
     res.send(routeList);
   } catch (err) {
     throw err;
@@ -63,12 +62,56 @@ app.get("/product", async (req, res) => {
 
 app.post("/user", async (req, res) => {
   let task = req.body;
-  //console.log(task.mail);
   try {
-    const result = await db.pool.query(
-      `insert into user (user_id, name, mail, password) values ("${task.user_id}","${task.name}", "${task.mail}", "${task.password}")`
+    const presult = await db.pool.query(
+      `SELECT * FROM user WHERE user_id  = "${task.user_id}"`
     );
-    res.send(task);
+    if (presult.length < 0) {
+      const result = await db.pool.query(
+        `insert into user (user_id, name, mail, password) values ("${task.user_id}","${task.name}", "${task.mail}", "${task.password}")`
+      );
+      res.send(task);
+    } else {
+      res.send("user already exist");
+    }
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.post("/company", async (req, res) => {
+  let task = req.body;
+  try {
+    const presult = await db.pool.query(
+      `SELECT * FROM company WHERE user_id  = "${task.company_id}"`
+    );
+    if (presult.length < 0) {
+      const result = await db.pool.query(
+        `insert into company (company_id, name, mail, siret) values ("${task.company_id}","${task.name}", "${task.mail}", "${task.siret}")`
+      );
+      res.send(task);
+    } else {
+      res.send("company already exist");
+    }
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.post("/product", async (req, res) => {
+  let task = req.body;
+  try {
+    const presult = await db.pool.query(
+      `SELECT * FROM product WHERE product_id  = "${task.product_id}"`
+    );
+    if (presult.length < 0) {
+      const result = await db.pool.query(
+        `insert into product (product_id, name, quantity, unit, company_id) values ("${task.product_id}","${task.name}", "${task.quantity}", "${task.unit}", "${task.company_id}")`
+      );
+      res.send(task);
+    } else {
+      res.send("product already exist");
+    }
   } catch (err) {
     throw err;
   }
