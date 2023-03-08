@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // GET
 
-const routeList = ["user", "admin", "company", "product"];
+const routeList = ["user", "users", "admin", "company", "product"];
 
 app.get("/", async (req, res) => {
   try {
@@ -28,7 +28,19 @@ app.get("/users", async (req, res) => {
   }
 });
 
-app.get("/admin", async (req, res) => {
+app.get("/user", async (req, res) => {
+  console.log(req.query.company_id);
+  try {
+    const result = await db.pool.query(
+      `SELECT * FROM user WHERE user_id = "${req.query.user_id}"`
+    );
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get("/admins", async (req, res) => {
   try {
     const result = await db.pool.query("select * from user where is_admin = 1");
     res.send(result);
@@ -37,7 +49,7 @@ app.get("/admin", async (req, res) => {
   }
 });
 
-app.get("/company", async (req, res) => {
+app.get("/companies", async (req, res) => {
   try {
     const result = await db.pool.query("select * from company");
     res.send(result);
@@ -46,11 +58,35 @@ app.get("/company", async (req, res) => {
   }
 });
 
-app.get("/product", async (req, res) => {
+app.get("/company", async (req, res) => {
+  console.log(req.query.company_id);
+  try {
+    const result = await db.pool.query(
+      `SELECT * FROM company WHERE company_id = "${req.query.company_id}"`
+    );
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get("/products", async (req, res) => {
   console.log(req.query.company_id);
   try {
     const result = await db.pool.query(
       `SELECT * FROM product WHERE comany_id = "${req.query.company_id}"`
+    );
+    res.send(result);
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.get("/products", async (req, res) => {
+  console.log(req.query.product_id);
+  try {
+    const result = await db.pool.query(
+      `SELECT * FROM product WHERE comany_id = "${req.query.product_id}"`
     );
     res.send(result);
   } catch (err) {
